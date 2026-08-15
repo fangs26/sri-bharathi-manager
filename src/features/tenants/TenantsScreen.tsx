@@ -3,6 +3,7 @@ import type { Nav } from '@/app/App';
 import { useDb } from '@/data/store';
 import type { ID, TenantStatus } from '@/data/types';
 import { humanDate } from '@/domain/dates';
+import { worstStatus } from '@/domain/billing';
 import { money, prettyPhone } from '@/ui/format';
 import { Avatar, Button, Card, EmptyState, Input, Segmented, StatusChip, cx } from '@/ui/primitives';
 import { useIsMobile } from '@/ui/useMediaQuery';
@@ -56,7 +57,7 @@ export function TenantsScreen({ nav }: { nav: Nav }) {
         const room = bed ? db.db.rooms.find((r) => r.id === bed.roomId) : null;
         return (
           t.fullName.toLowerCase().includes(needle) ||
-          t.phone.includes(needle) ||
+          (t.phone ?? '').includes(needle) ||
           (t.orgName ?? '').toLowerCase().includes(needle) ||
           (room ? `room ${room.roomNo}`.includes(needle) || room.roomNo.includes(needle) : false)
         );
@@ -72,16 +73,9 @@ export function TenantsScreen({ nav }: { nav: Nav }) {
           bed,
           rent: stay?.agreedRent ?? 0,
           balance: db.balanceByTenant.get(t.id) ?? 0,
-          status: bills.length
-            ? bills.reduce<'paid' | 'partial' | 'due' | 'overdue' | 'waived'>(
-                (worst, b) =>
-                  ({ paid: 0, waived: 0, due: 1, partial: 2, overdue: 3 })[b.status] >
-                  ({ paid: 0, waived: 0, due: 1, partial: 2, overdue: 3 })[worst]
-                    ? b.status
-                    : worst,
-                'paid'
-              )
-            : ('paid' as const),
+          // Shared with the bed map, so the two views can never rank the same
+          // resident differently.
+          status: worstStatus(bills),
         };
       })
       .sort((a, b) => b.balance - a.balance || a.tenant.fullName.localeCompare(b.tenant.fullName));

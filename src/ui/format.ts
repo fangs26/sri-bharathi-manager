@@ -6,11 +6,6 @@ export function money(n: number): string {
   return `${sign}₹${inr.format(Math.abs(Math.round(n)))}`;
 }
 
-/** 12,34,567 without the symbol, for tight table cells. */
-export function num(n: number): string {
-  return inr.format(Math.round(n));
-}
-
 /** ₹1.2L / ₹45k — for headline tiles where the exact rupee doesn't matter. */
 export function moneyShort(n: number): string {
   const abs = Math.abs(n);
@@ -18,13 +13,6 @@ export function moneyShort(n: number): string {
   if (abs >= 100_000) return `₹${(n / 100_000).toFixed(1).replace(/\.0$/, '')}L`;
   if (abs >= 10_000) return `₹${Math.round(n / 1000)}k`;
   return money(n);
-}
-
-export function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 /** Digits only, with the Indian country code, ready for a wa.me link. */

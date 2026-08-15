@@ -12,6 +12,7 @@ import {
   addDays,
   addMonthsClamped,
   dayBefore,
+  daysBetween,
   daysInclusive,
   daysInMonth,
   maxDate,
@@ -273,7 +274,7 @@ export function computeBillView(
   const balance = total - paid;
 
   const overdueFrom = addDays(bill.dueDate, grace);
-  const daysOverdue = balance > 0 && today > overdueFrom ? daysBetweenSafe(overdueFrom, today) : 0;
+  const daysOverdue = balance > 0 && today > overdueFrom ? daysBetween(overdueFrom, today) : 0;
 
   let status: BillStatus;
   if (balance <= 0) status = waived > 0 && paid === 0 ? 'waived' : 'paid';
@@ -282,10 +283,6 @@ export function computeBillView(
   else status = 'due';
 
   return { ...bill, items, total, paid, balance, status, daysOverdue };
-}
-
-function daysBetweenSafe(a: DateStr, b: DateStr): number {
-  return Math.round((toDate(b).getTime() - toDate(a).getTime()) / 86_400_000);
 }
 
 /** Worst status wins, so a bed tile shows the most urgent thing about her. */
@@ -306,5 +303,3 @@ export function worstStatus(views: BillView[]): BillStatus {
 export function sumBalance(views: BillView[]): number {
   return views.reduce((s, v) => s + Math.max(0, v.balance), 0);
 }
-
-export { SEVERITY as STATUS_SEVERITY };

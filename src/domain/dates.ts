@@ -66,12 +66,6 @@ export function daysInclusive(a: DateStr, b: DateStr): number {
   return daysBetween(a, b) + 1;
 }
 
-export function isBefore(a: DateStr, b: DateStr): boolean {
-  return a < b;
-}
-export function isAfter(a: DateStr, b: DateStr): boolean {
-  return a > b;
-}
 export function minDate(a: DateStr, b: DateStr): DateStr {
   return a < b ? a : b;
 }

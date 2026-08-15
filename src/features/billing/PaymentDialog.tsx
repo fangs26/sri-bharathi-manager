@@ -14,7 +14,7 @@ import {
   StatusChip,
   useToast,
 } from '@/ui/primitives';
-import { IconCheck, IconPrint, IconWhatsApp } from '@/ui/icons';
+import { IconAlert, IconCheck, IconPrint, IconWhatsApp } from '@/ui/icons';
 import { buildReceiptHtml, printReceipt, saveReceiptPdf } from '../receipt';
 import { fillTemplate, openWhatsApp } from '../messaging';
 
@@ -252,6 +252,31 @@ export function PaymentDialog({
             <Input type="date" value={paidOn} onChange={(e) => setPaidOn(e.target.value)} />
           </Field>
         </div>
+
+        {/* Paying more than the month costs is almost always a typo. If it is
+            deliberate, it belongs on the account rather than buried in one
+            month, where the surplus would not show up as credit anywhere. */}
+        {selectedBill && amount > selectedBill.balance && selectedBill.balance > 0 && (
+          <div className="flex items-start gap-2 rounded-[12px] border border-[#eddcb2] bg-gold-soft px-3.5 py-2.5">
+            <span className="mt-0.5 shrink-0 text-[#8a6410]">
+              <IconAlert size={15} />
+            </span>
+            <p className="text-[12.5px] leading-relaxed text-[#7a5a0e]">
+              That is {money(amount - selectedBill.balance)} more than this period needs. The extra will not be
+              carried over to her next month — record it as{' '}
+              <button
+                className="font-semibold underline underline-offset-2"
+                onClick={() => {
+                  setSelectedBillId('');
+                  setAmount(amount);
+                }}
+              >
+                a payment on account
+              </button>{' '}
+              instead, or reduce the amount.
+            </p>
+          </div>
+        )}
 
         {selectedBill && selectedBill.balance > 0 && (
           <div className="flex flex-wrap gap-1.5">
