@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-web/
+release/
+*.tsbuildinfo
+
+# The packaged installer is far too big for git — attach it to a GitHub Release
+*.exe
+*.zip
+*.blockmap
+
+# Real hostel data must never be committed: it holds residents' names,
+# phone numbers and guardians' contact details.
+*.sbh
+sbh-data*.json
+sbh-secret.bin
+
+# Cloud credentials, once the sync is connected
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local scratch
+*.log
+
+# Screenshots are kept out: they showed real branch names and phone numbers
+screenshots/

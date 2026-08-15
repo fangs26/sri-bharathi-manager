@@ -1,0 +1,194 @@
+@import 'tailwindcss';
+
+/* Brand tokens lifted from the public website so the app and the site read as
+   one thing. See sri-bharathi-hostel/index.html (:root). */
+@theme {
+  --color-cream: #fcf8f1;
+  --color-cream-2: #f6ecdb;
+  --color-sand: #eadbc4;
+  --color-terracotta: #c2643f;
+  --color-terracotta-dk: #a44c2c;
+  --color-terracotta-soft: #f4e2d9;
+  --color-sage: #6e7f5a;
+  --color-sage-dk: #566145;
+  --color-sage-soft: #e6ecdf;
+  --color-gold: #d9a441;
+  --color-gold-soft: #f9edd2;
+  --color-brown: #3b2d24;
+  --color-ink: #241b15;
+  --color-muted: #7c6b5c;
+  --color-line: #e8dcc9;
+
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif;
+  --font-num: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+
+  --radius-card: 16px;
+
+  --shadow-soft: 0 1px 2px rgba(59, 45, 36, 0.04), 0 8px 24px -12px rgba(59, 45, 36, 0.16);
+  --shadow-lift: 0 2px 4px rgba(59, 45, 36, 0.06), 0 16px 40px -16px rgba(59, 45, 36, 0.28);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    /* Room for the phone's home indicator / gesture bar. */
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  button {
+    cursor: pointer;
+    /* Kills the 300ms tap delay and the grey flash on Android. */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* iOS zooms the page in when a focused field is under 16px. */
+  @media (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+  /* Money and counts should never jiggle as they update. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #e0d3bd;
+    border-radius: 99px;
+    border: 3px solid var(--color-cream);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cdbc9f;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Tables that cannot become cards scroll inside their own box rather than
+     pushing the whole page sideways. */
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+  }
+  .field {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: var(--color-ink);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field:hover {
+    border-color: #d9c9ae;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-terracotta);
+    box-shadow: 0 0 0 3px rgba(194, 100, 63, 0.12);
+  }
+  .field::placeholder {
+    color: #b3a495;
+  }
+  .label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 5px;
+  }
+}
+
+/* Fade/slide used by modals and the side sheet. */
+@keyframes sbh-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes sbh-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sbh-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+@keyframes sbh-slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.anim-fade {
+  animation: sbh-fade-in 0.18s ease-out;
+}
+.anim-rise {
+  animation: sbh-rise 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-slide {
+  animation: sbh-slide-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade,
+  .anim-rise,
+  .anim-slide {
+    animation: none;
+  }
+}
